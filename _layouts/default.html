@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0px;
+    }
+
+
+    .spacer {
+        visibility: hidden;
+        z-index: -999;
+    }
+
+    .viewport {
+        position: fixed;
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+    .basic {
+        display: flex;
+        width: 100%;
+    }
+
+    .flex {
+        flex: 1
+    }
+
+    .sidebar {
+        width: 30%;
+        min-width: 300px;
+        max-width: 400px;
+        height: 100%;
+        background-color: aquamarine;
+    }
+
+    .navbar {
+        height: 50px;
+        background-color: bisque;
+    }
+</style>
+<body>
+<div class="viewport">
+    <div class="sidebar">
+        <ul>
+            <li>a</li>
+            <li>b</li>
+            <li>c</li>
+        </ul>
+    </div>
+    <div class="navbar flex">
+        <span>a</span>
+        <span>b</span>
+        <span>c</span>
+    </div>
+</div>
+<div class="basic">
+    <div class="sidebar spacer"></div>
+    <div class="flex">
+        <div class="navbar spacer"></div>
+        <div class="content">abc</div>
+    </div>
+</div>
+</body>
+</html>
