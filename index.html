@@ -2,4 +2,29 @@
 layout: default
 title: Popduke's blog
 ---
-
+<div class="w3-col m2 l3" style="height: 2px;">
+</div>
+<div class="w3-col m8 l5">
+    <ul class="w3-ul w3-panel">
+        {% for post in site.posts %}
+        <li class="w3-border-0">
+            <div class="w3-card-2 w3-round">
+                <header class="w3-container">
+                    <h2 class="w3-text-dark-grey"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+                    <p class="w3-tiny w3-text-grey">{{ post.date | date_to_string}}</p>
+                </header>
+                <div class="w3-container">
+                    <div class="w3-text-grey">
+                        {{ post.excerpt }}
+                    </div>
+                    <div class="w3-section w3-clear">
+                        <a class="w3-btn w3-theme-d1 w3-border w3-round-large w3-right" href="{{ post.url}}">继续阅读</a>
+                    </div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="w3-col m2 l4" style="height: 2px;">
+</div>

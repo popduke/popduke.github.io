@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+<div class="w3-col m2 l3">
+    categories and tags
+</div>
+<div class="w3-col m8 l5">
+    <header class="w3-container">
+        <h2 class="w3-text-dark-grey">{{ page.title}}</a></h2>
+        <p class="w3-tiny w3-text-grey">{{ page.date | date_to_string}}</p>
+    </header>
+    <div class="w3-container">
+        {{ content }}
+    </div>
+</div>
+<div class="w3-col m2 l4">
+    leave blank
+</div>
