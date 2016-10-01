@@ -8,6 +8,7 @@ NodeJS是单进程单线程<a name="1">[<sup>[1]</sup>](#1ref)</a>结构，适�
 ![手动管理实例](/images/2016-09-20/手动管理实例.png)
 
 想想就好烦！幸好，NodeJS引入了Cluster模块试图简化这些体力劳动。使用Cluster模块可以运行并管理多个实例进程，而且无须为每个进程单独配置监听端口（当然如果你想的话也可以）。下面是Cluster模块的基本用法，一个子进程启动器：
+
 ```javascript
 //cluster_launcher.js
 let cluster = require('cluster');
@@ -29,9 +30,11 @@ if (cluster.isMaster) {
     //require('./udpapp.js'); //uncomment if you need a udp server
 }
 ```
+
 代码很简单，运行后会产生一个Master进程及n个Worker子进程，n等于CPU核心数。
 
 启动器本身代码（cluster_launcher.js）在Master和Worker子进程都会被执行，依据cluster.isMaster的值来区分运行在Master和Worker上的代码分支。Master进程的cluster对象上定义有fork方法，调用后操作系统会生成一个新的Worker子进程。Worker子进程除了从Master进程继承了环境变量和命令行等设置，另外还多了一个环境变量**NODE_UNIQUE_ID**来保存Worker进程的Id（由Master负责分配）。Cluster模块内部通过判断**NODE_UNIQUE_ID**的存在与否确定当前运行的进程是Master还是Worker：
+
 ``` javascript
 cluster.isWorker = ('NODE_UNIQUE_ID' in process.env);
 cluster.isMaster = (cluster.isWorker === false);
@@ -39,6 +42,7 @@ cluster.isMaster = (cluster.isWorker === false);
 刚才提到使用Cluster模块管理多进程Node应用，可以不用单独为每个进程指定监听端口，也就是从使用者角度看每个进程使用同一个端口监听网络而不会发生端口冲突。这是怎么做到的呢？原来Node内部让TCP和UDP模块的对Cluster启动的情况做了特殊处理，接下来对TCP和UDP两种情况分别开8。
 
 首先是TCP，按国际惯例，Hello World!。
+
 ```javascript
 //tcpapp.js
 let http = require('http');
@@ -47,14 +51,19 @@ http.createServer((req, res) => {
    res.end('hello world\n'); 
 }).listen(8000);
 ```
+
 以上代码实现了一个最简单的HTTP服务器，在8000端口监听请求并返回“hello world”字符串。TCP是面向连接的协议，操作系统层面每个监听端口都对应一个 Socket用来监听网络上的TCP连接请求（Incoming Connection），每当握手成功操作系统就会创建一个新的Socket代表这个已建立的连接（Established Connection）用做后续的IO操作。单独运行上面的服务器的话，这两种Socket都属于同一个进程，也就是监听TCP连接和处理HTTP请求都在一个进程完成。以下步骤帮助确认这种情况:
+
 >$ node tcpapp.js & 
+
 ```
 [1] 51647 //pid
 ```
 
 打开浏览器访问：`http://localhost:8000` ，然后lsof查看进程socket的情况：
+
 >$ lsof -a -i tcp:8000 -P -l
+
 ```
 COMMAND     PID     USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
 Google    10268      501   97u  IPv6 0xff13215c8e8c1ac7      0t0  TCP localhost:50807->localhost:8000 (ESTABLISHED)
@@ -65,7 +74,9 @@ node      38622      501   12u  IPv6 0xff13215c8e8c1007      0t0  TCP localhost:
 可以看到同一个node进程上打开了两个Socket（DEVICE列的值不同），一个负责监听端口，一个负责已建立连接上的IO。一般来说[TCP连接握手](https://en.wikipedia.org/wiki/Transmission_Control_Protocol#Connection_establishment)由操作系统在内核空间完成，不会形成性能瓶颈，单进程node应用的瓶颈在于应用逻辑，即使业务逻辑以IO为主，CPU消耗仍然比内核操作大得多。因此单进程node应用的瓶颈会在业务逻辑处理量增加到单CPU核心饱和时出现。
 
 下面看看用cluster_launcher.js启动的情况，运行下面的命令：
+
 >$ node cluster_launcher.js &
+
 ```
 [1] 28153
 Master PID: 28153, CPUs: 4
@@ -76,7 +87,9 @@ Worker PID: 28157
 ```
 
 可以看到一个Master进程启动了四个Worker子进程：
+
 >$ pstree 28153
+
 ```
 -+- 28153 /usr/local/bin/node /tmp/demo/cluster_launcher.js
  |--- 28154 /usr/local/bin/node /tmp/demo/cluster_launcher.js
@@ -86,7 +99,9 @@ Worker PID: 28157
 ```
 
 打开浏览器访问`http://localhost:8000`，然后lsof下进程的socket的情况:
+
 >$ lsof -a -i tcp:8000 -P -R -l
+
 ```
 COMMAND     PID  PPID     USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
 Google    10268     1      501    3u  IPv6 0xff13215c8e8c1007      0t0  TCP localhost:50504->localhost:8000 (ESTABLISHED)
@@ -109,6 +124,7 @@ node      28156 28153      501   14u  IPv6 0xff13215c8e8c1ac7      0t0  TCP loca
 除了默认的调度策略，还可以让OS的Process Scheduler来负责worker进程的调度（详见[SCHED_NONE](https://nodejs.org/dist/latest-v4.x/docs/api/cluster.html#cluster_cluster_schedulingpolicy)策略），这也是Windows上的默认策略，但在Linux下效果并不理想，这里不再赘述。
 
 接下来是UDP的情况:
+
 ```javascript
 //udpapp.js
 let dgram = require('dgram');
@@ -126,8 +142,11 @@ server.on('listening', () => {
 });
 server.bind(9000);
 ```
+
 上面的代码启动UDP服务器，在9000端口监听UDP packet。用cluster_launcher.js启动并lsof查看socket结果如下：
+
 >$ node cluster_launcher.js &
+
 ```
 Master PID: 23263, CPUs: 4
 Worker PID: 23266
@@ -139,7 +158,9 @@ server listening 0.0.0.0:9000
 server listening 0.0.0.0:9000
 server listening 0.0.0.0:9000
 ```
+
 >$ lsof -a -i udp:9000 -P -R -l
+
 ```
 COMMAND   PID  PPID     USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
 node    23263 12710      501   17u  IPv4 0xff13215c8a237c97      0t0  UDP *:9000
