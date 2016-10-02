@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-{%include head.html%}
+{% include head.html %}
 <body>
-{%include navbar.html%}
+{% include navbar.html %}
 <div class="w3-container">
     {{content}}
 </div>
 </body>
 <script src="{{ '/assets/js/highlight.pack.js' | prepend: site.baseurl }}"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+{% include ga.html%}
 </html>
