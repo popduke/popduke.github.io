@@ -1,4 +1,4 @@
-name: popduke(Yonny Hao)
+name: Popduke's personal blog
 markdown: kramdown
 kramdown:
   input: GFM
@@ -9,4 +9,5 @@ kramdown:
 sass:
   sass_dir: _sass
   style: compressed
-
+gems:
+  - jekyll-feed
