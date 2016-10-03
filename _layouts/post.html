@@ -7,11 +7,12 @@ layout: default
 <div class="w3-col m8 l5">
     <header class="w3-container">
         <h2 class="w3-text-dark-grey">{{ page.title}}</a></h2>
-        <p class="w3-tiny w3-text-grey">{{ page.date | date_to_string}}</p>
+        <p class="w3-tiny w3-text-grey">{{ page.date | date_to_string}} <span>{% if page.comments %} • <a href="https://popduke.github.io{{ page.url }}#disqus_thread">0 Comments</a>{% endif %}</span></p>
     </header>
     <div class="w3-container markdown-body">
         {{ content }}
     </div>
+    {% include disqus.html %}
 </div>
 <div class="w3-col m2 l4" style="height: 2px;">
 </div>
