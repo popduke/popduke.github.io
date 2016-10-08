@@ -1,0 +1,32 @@
+{% if page.comments %}
+<script>
+    var d = document;
+    var imgs = d.getElementsByClassName("imgpoper");
+    for(var i = -1; ++i < imgs.length;){
+        var img = imgs[i];
+        img.style.display = "block";
+        img.style.margin = "auto";
+        img.style.cursor = "-webkit-zoom-in";
+        img.addEventListener("click", function(){
+            var zoomedin = d.createElement("img");
+            var imgBed = d.getElementsByClassName("imgbed").item(0);
+            var maskedElem = imgBed.parentNode;
+            imgBed.style.width = maskedElem.width;
+            imgBed.style.height = maskedElem.height;
+            imgBed.style.backgroundColor = "black";
+            imgBed.style.opacity = "0.5";
+            var bodyElem = d.getElementsByClassName("imgbed").length > 0 ? d.getElementsByClassName("imgbed").item(0) : d.getElementsByTagName("body").item(0);
+            zoomedin.setAttribute("src", img.getAttribute("src"));
+            zoomedin.style.position = "fixed";
+            zoomedin.style.top = "0px";
+            zoomedin.style.left = "0px";
+            zoomedin.style.maxWidth = "100%";
+            zoomedin.style.cursor = "-webkit-zoom-out";
+            zoomedin.addEventListener("click", function(){
+                bodyElem.removeChild(zoomedin);
+            });
+            bodyElem.appendChild(zoomedin);
+        });
+    }
+</script>
+{% endif %}

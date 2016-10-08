@@ -13,15 +13,15 @@ Xcode从6.0开始正式支持Framework类型的工程，之前只能创建Static
 
 选择工程模版，这里选择iOS\Cocoa Touch Framework作为开始，其实选择其他平台下的Framework模版也可以，因为最终我们是要在一个工程内支持所有平台；第二步先别勾选Include Unit Tests，之后会添加；第三步选择同时创建Git。
 
-![创建工程](/images/2016-08-14/创建工程.gif)
+![创建工程](/images/2016-08-14/创建工程.gif){: .imgpoper }
 
 创建之后的目录结构如下:
 
-![自动生成的目录结构](/images/2016-08-14/自动生成的目录结构.png)
+![自动生成的目录结构](/images/2016-08-14/自动生成的目录结构.png){: .imgpoper }
 
 先稍作下改动以符合即将发布的Swift Package Manager的要求。将包含*Info.plist*和*RandomArithmetics.h*的文件夹重命名成*Sources*，并删除自动生成的*RandomArithmetics.h*文件:
 
-![修改后的目录结构](/images/2016-08-14/修改后的目录结构.png)
+![修改后的目录结构](/images/2016-08-14/修改后的目录结构.png){: .imgpoper }
 
 >Swift Package Manager[规范](https://swift.org/package-manager/)要求，代码文件默认放在Sources目录下。
 

@@ -6,9 +6,7 @@ excerpt: "NodeJS是单进程单线程结构，适合编写IO密集型的网络�
 ---
 NodeJS是单进程单线程[^1]结构，适合编写IO密集型的网络应用。为了充分利用多核CPU的计算能力，最直接的想法是同时运行多个实例进程，但手动管理这些进程却是个麻烦事，不但要知道当前CPU的核心数以确定进程数量，还要为不同实例进程配置不同网络监听端口（Listening Port）避免端口冲突[^2]，另外还要监控进程运行状态，执行Crash后重启等操作，最后还得配合Load Balancer统一对外的服务端口：
 
-
-![手动管理实例](/images/2016-09-20/手动管理实例.png)
-
+![手动管理实例](/images/2016-09-20/手动管理实例.png){: .imgpoper }
 
 想想就好烦！幸好，NodeJS引入了Cluster模块试图简化这些体力劳动。使用Cluster模块可以运行并管理多个实例进程，而且无须为每个进程单独配置监听端口（当然如果你想的话也可以）。下面是Cluster模块的基本用法，一个子进程启动器：
 
@@ -118,7 +116,7 @@ node      28156 28153      501   14u  IPv6 0xff13215c8e8c1ac7      0t0  TCP loca
 
 可以看到分配给Master和Worker进程的DEVICE（对应Protocol Control Block的内核地址）的值都不一样，说明各有各的Socket。Master进程只有一个处在Listening状态的Socket负责监听8000端口，Worker进程的Socket都是Established的，说明Worker进程只负责处理连接上的IO。同时也可以看到，三个Established状态的TCP连接[^3]被分配给了三个Worker进程，也就是说，Cluster模块可以利用多进程并行处理同一端口的TCP连接：
 <br>
-![Cluster下的TCP连接处理](/images/2016-09-20/Cluster下的TCP连接处理.png)
+![Cluster下的TCP连接处理](/images/2016-09-20/Cluster下的TCP连接处理.png){: .imgpoper }
 
 剩下的就要看每个Worker进程的负载是否均衡了。上图所示是Cluster模式下Established TCP连接的默认调度方式（除Windows以外），调度由Master进程负责，以Round Robin的方式将Established状态的连接IPC给Worker进程做进一步处理，这样看来各Worker的负载是平均的。
 
@@ -174,7 +172,7 @@ node    23267 23263      501   14u  IPv4 0xff13215c8a237c97      0t0  UDP *:9000
 ```
 
 可以看到Master和Worker进程的实际上共享同一个UDP Socket（DEVICE指向地址相同），但区别是Worker子进程调用了Bind方法而Master进程没有，Master进程在这里的作用仅仅是管理Worker进程“声明”使用到的UDP Socket：每当Worker调用Bind方法监听某UDP端口时，内部会通过IPC询问Master是否有可重用的UDP Socket，Master收到询问后会在本地Socket缓存中查找，没有则新创建一个并缓存起来，之后把相应的UDP Socket IPC给Worker，Worker收到后在其上完成真正的Bind操作。这样处理结果就是Cluster模块把UDP packet的分发任务交给OS的Process Scheduler负责：当9000端口收到一个UDP packet时，Process Scheduler就会随机分配给一个Worker做进一步处理：
-![Cluster下的UDP连接处理](/images/2016-09-20/Cluster下的UDP连接处理.png)
+![Cluster下的UDP连接处理](/images/2016-09-20/Cluster下的UDP连接处理.png){: .imgpoper }
 
 
 以上是对Cluster模块在处理TCP和UDP时内部机理的一些分析发掘，希望能对各位使用好Cluster模块有所帮助，如有纰漏敬请指出。
