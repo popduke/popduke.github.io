@@ -87,11 +87,11 @@ class Tests: XCTestCase {
 
 接着添加一个Cocoa Framework Target用来生成macOS版的Framework，并取名*Random Arithmetics macOS*，注意同样不选择同时包含Unit Tests:
 
-![添加Cocoa Framework Target](/images/2016-08-16/添加CocoaFrameworkTarget.gif)
+![添加Cocoa Framework Target](/images/2016-08-16/添加CocoaFrameworkTarget.gif){: .imgpoper }
 
 删除自动生成“RandomArithmetics macOS”目录以及里面的代码，
 
-![删除自动生成的目录和代码](/images/2016-08-16/删除自动生成的目录和代码.gif)
+![删除自动生成的目录和代码](/images/2016-08-16/删除自动生成的目录和代码.gif){: .imgpoper }
 
 然后更正下Build Settings：
 
@@ -103,11 +103,11 @@ class Tests: XCTestCase {
 
 接下来向“Build Phases/Compile Sources”中添加已有代码：
 
-![添加代码](/images/2016-08-16/添加代码.gif)
+![添加代码](/images/2016-08-16/添加代码.gif){: .imgpoper }
 
 激活Mac版的Build Scheme，开始编译（⌘+B），编译成功后可以打开Finder查看编译结果。
 
-![编译并察看结果](/images/2016-08-16/编译并察看结果.gif)
+![编译并察看结果](/images/2016-08-16/编译并察看结果.gif){: .imgpoper }
 
 与之前添加“iOS Unit Testing Bundle”类似，添加“OS X Unit Testing Bundle”后需要做些Clean&Fix的工作：
 1，删除自动生成的目录和代码  
@@ -115,11 +115,11 @@ class Tests: XCTestCase {
 3，添加Mac版Nimble.Framework到“Build Phases/Link Binary With Libraries”中，并更新Framework Search Paths  
 4，添加已有的测试代码到“Build Phases/Compile Sources”  
 
-![设置Compile Sources和Nimble.Framework](/images/2016-08-16/设置CompileSources和NimbleFramework.gif)
+![设置Compile Sources和Nimble.Framework](/images/2016-08-16/设置CompileSources和NimbleFramework.gif){: .imgpoper }
 
 5，激活RandomArithmetics macOSTests，运行测试（⌘+U）
 
-![macOS版Framework的测试结果](/images/2016-08-16/macOS版Framework的测试结果.png)
+![macOS版Framework的测试结果](/images/2016-08-16/macOS版Framework的测试结果.png){: .imgpoper }
 
 可以看到，编译开关起了作用，只执行了macOS上对应测试方法。  添加对watchOS和tvOS版的支持过程类似，这里就不再赘述了。
 
@@ -187,7 +187,7 @@ end
 
 接着，关闭打开的Xcode的工程后，打开生成的RandomArithmeticsPodTest.xcworkspace可以看到RandomArithmetics已经添加成功了。
 
-![RandomArithmetics Framework添加成功](/images/2016-08-16/RandomArithmeticsFramework添加成功.png)
+![RandomArithmetics Framework添加成功](/images/2016-08-16/RandomArithmeticsFramework添加成功.png){: .imgpoper }
 
 4, 发布到Cocoapod Public Repository
 
@@ -211,23 +211,23 @@ Carthage没有像Cocoapods那样中心化的Public Repository，发布比较简�
 
 如果运行后出现以下错误信息
 
-![No shared schemes error](/images/2016-08-16/NoSharedSchemesError.png)
+![No shared schemes error](/images/2016-08-16/NoSharedSchemesError.png){: .imgpoper }
 
 说明工程没有公开的Build Scheme，打开Manage Schemes对话框，把需要公开的Scheme标记成Shared即可:
 
-![公开Build Schemes](/images/2016-08-16/公开BuildSchemes.gif)
+![公开Build Schemes](/images/2016-08-16/公开BuildSchemes.gif){: .imgpoper }
 
 之后commit代码时提交“RandomArithmetics.xcodeproj/Shared Data/Schemes”下的所有内容:
 
-![提交Shared Data目录](/images/2016-08-16/提交SharedData目录.png)
+![提交Shared Data目录](/images/2016-08-16/提交SharedData目录.png){: .imgpoper }
 
 重新运行命令，这回应该没问题了:
 
-![编译成功](/images/2016-08-16/编译成功.png)
+![编译成功](/images/2016-08-16/编译成功.png){: .imgpoper }
 
 可以看到公开的Scheme都编译成功，Great！打开Finder查看下编译结果。
 
-![Carthage编译输出结果](/images/2016-08-16/Carthage编译输出结果.png)
+![Carthage编译输出结果](/images/2016-08-16/Carthage编译输出结果.png){: .imgpoper }
 
 本地验证通过后，剩下的就是Push代码到Github等类似托管服务，不在赘述。
 

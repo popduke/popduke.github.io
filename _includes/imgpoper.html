@@ -1,32 +1,47 @@
 {% if page.comments %}
-<script>
+<script defer>
     var d = document;
     var imgs = d.getElementsByClassName("imgpoper");
-    for(var i = -1; ++i < imgs.length;){
+    for (var i = -1; ++i < imgs.length;) {
         var img = imgs[i];
         img.style.display = "block";
         img.style.margin = "auto";
         img.style.cursor = "-webkit-zoom-in";
-        img.addEventListener("click", function(){
-            var zoomedin = d.createElement("img");
-            var imgBed = d.getElementsByClassName("imgbed").item(0);
-            var maskedElem = imgBed.parentNode;
-            imgBed.style.width = maskedElem.width;
-            imgBed.style.height = maskedElem.height;
-            imgBed.style.backgroundColor = "black";
-            imgBed.style.opacity = "0.5";
-            var bodyElem = d.getElementsByClassName("imgbed").length > 0 ? d.getElementsByClassName("imgbed").item(0) : d.getElementsByTagName("body").item(0);
-            zoomedin.setAttribute("src", img.getAttribute("src"));
-            zoomedin.style.position = "fixed";
-            zoomedin.style.top = "0px";
-            zoomedin.style.left = "0px";
-            zoomedin.style.maxWidth = "100%";
-            zoomedin.style.cursor = "-webkit-zoom-out";
-            zoomedin.addEventListener("click", function(){
-                bodyElem.removeChild(zoomedin);
-            });
-            bodyElem.appendChild(zoomedin);
-        });
+        img.addEventListener("click", function (img) {
+            return function () {
+                var bodyEl = d.getElementsByTagName("body").item(0);
+                var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                var maskEl = d.createElement("div");
+                bodyEl.appendChild(maskEl);
+                maskEl.style.position = "fixed";
+                maskEl.style.top = 0;
+                maskEl.style.left = 0;
+                maskEl.style.width = w + "px";
+                maskEl.style.height = h + "px";
+                maskEl.style.textAlign = "center";
+                maskEl.style.backgroundColor = "rgba(0,0,0,0.7)";
+                maskEl.style.overflow = "auto";
+
+                var alignHelper = d.createElement("span");
+                maskEl.appendChild(alignHelper);
+                alignHelper.style.display = "inline-block";
+                alignHelper.style.height = "100%";
+                alignHelper.style.verticalAlign = "middle";
+
+                var zoomedIn = d.createElement("img");
+                maskEl.appendChild(zoomedIn);
+                zoomedIn.style.backgroundColor = "white";
+                zoomedIn.style.maxWidth = "100%";
+                zoomedIn.style.cursor = "-webkit-zoom-out";
+                zoomedIn.style.verticalAlign = "middle";
+                zoomedIn.setAttribute("src", img.getAttribute("src"));
+
+                maskEl.addEventListener("click", function () {
+                    bodyEl.removeChild(maskEl);
+                });
+            }
+        }(img));
     }
 </script>
 {% endif %}
