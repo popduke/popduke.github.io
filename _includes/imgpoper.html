@@ -10,15 +10,13 @@
         img.addEventListener("click", function (img) {
             return function () {
                 var bodyEl = d.getElementsByTagName("body").item(0);
-                var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
                 var maskEl = d.createElement("div");
                 bodyEl.appendChild(maskEl);
                 maskEl.style.position = "fixed";
                 maskEl.style.top = 0;
                 maskEl.style.left = 0;
-                maskEl.style.width = w + "px";
-                maskEl.style.height = h + "px";
+                maskEl.style.width = "100%";
+                maskEl.style.height = "100%";
                 maskEl.style.textAlign = "center";
                 maskEl.style.backgroundColor = "rgba(0,0,0,0.7)";
                 maskEl.style.overflow = "auto";
